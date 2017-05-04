@@ -1,11 +1,10 @@
 # wex_dip
-Image processing tools wrriten in Java for the Android Platfrom.
+Image processing tools wrriten in Java for the Android Platfrom by Velimir Avramovski.
 
 This lib was written for purposes of the UKIM, FEIT - Skopje Macedonia Digital Image processing Course.
 
 It offers the following effects ->
 
-public static String[][] CATEGORIES = {
             {"Geometrical",
                     "<",
                     "rotate",
@@ -38,7 +37,6 @@ public static String[][] CATEGORIES = {
                     "binary image",
                     "dilate pixels",
                     "erode pixels"}
-    };
 
 /*
 
