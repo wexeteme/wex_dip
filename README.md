@@ -3,6 +3,43 @@ Image processing tools wrriten in Java for the Android Platfrom.
 
 This lib was written for purposes of the UKIM, FEIT - Skopje Macedonia Digital Image processing Course.
 
+It offers the following effects ->
+
+public static String[][] CATEGORIES = {
+            {"Geometrical",
+                    "<",
+                    "rotate",
+                    "flip horizontally",
+                    "flip vertically",
+                    "reflection"},
+
+            {"Effects",
+                    "<",
+                    "doGray",
+                    "doInvert",
+                    "doGamma",
+                    "doColorFilteringR",
+                    "doColorFilteringG",
+                    "doColorFilteringB",
+                    "swapR_B",
+                    "swapR_G",
+                    "swapG_B",
+                    "shadingFilter",
+                    "decColorDepth",
+                    "doContrast",
+                    "doBrightness",
+                    "meanRemoval",
+                    "gaussianBlur",
+                    "sharpenImage",
+                    "doEdgeDetection"},
+
+            {"binaryEffects",
+                    "<",
+                    "binary image",
+                    "dilate pixels",
+                    "erode pixels"}
+    };
+
 /*
 
 MIT License
