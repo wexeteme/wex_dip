@@ -6,6 +6,7 @@ package com.wex.weffecto.main.pimage;
  */
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.util.Log;
 
@@ -39,7 +40,7 @@ public class ConvolutionMatrix {
         }
     }
 
-    public static Bitmap computeConvolution3x3(Bitmap src, ConvolutionMatrix matrix) {
+    public static Bitmap computeConvolution3x3(Bitmap src, ConvolutionMatrix matrix, final boolean GrayScale, int threshold) {
 
         // zemi golemini na slika
         int width = src.getWidth();
@@ -57,76 +58,105 @@ public class ConvolutionMatrix {
         // matrica koja zema 3x3 piksela od slika za mnozenje
         int[][] pixelsMatrix = new int[SIZE][SIZE];
 
-        /*
-        int pixelsAll[] = new int[width * height];
-        src.getPixels(pixelsAll, 0, width, 1, 1, width - 1, height - 1);
-        for (int i = 0; i < pixels.length; i++) {
-
-        }
-        result.setPixels(pixelsAll, 0, width, 1, 1, width - 1, height - 1);
-        */
-
         // gi izminuvame site pikseli so toa sto ostavame 2 - oni na krajot nema so sto da se sporeduvaat!
 
         int pixels[] = new int[width * height];
         src.getPixels(pixels, 0, width, 1, 1, width - 1, height - 1);
 
-        for (int h = 0; h < height - 2; ++h) {
-            for (int w = 0; w < width - 2; ++w) {
+        for (int h = 0; h < height; ++h) {
+            for (int w = 0; w < width; ++w) {
+
+                // epa, ovde ke go sredimo slucajot koj doaga do rab na slikata
 
                 for (int i = 0; i < SIZE; ++i) {
                     for (int j = 0; j < SIZE; ++j) {
-                        int index = (w + i + j) + (h)*width;
-                        pixelsMatrix[i][j] = pixels[index];
+                        int index = (w + i + j) + (h) * width;
+                        try {
+                            pixelsMatrix[i][j] = pixels[index];
+                        } catch (ArrayIndexOutOfBoundsException e) {
+                            e.printStackTrace();
+                            pixelsMatrix[i][j] = Color.WHITE;
+                        }
                     }
                 }
 
-                // get alpha of center pixel
+                // ja zemame alpha od centralniot pixel - odnosno momentalniot
                 A = Color.alpha(pixelsMatrix[1][1]);
 
                 // init color sum
                 sumR = sumG = sumB = 0;
 
-                // get sum of RGB on matrix
-                for (int i = 0; i < SIZE; ++i) {
-                    for (int j = 0; j < SIZE; ++j) {
-                        sumR += (Color.red  (pixelsMatrix[i][j]) * matrix.Matrix[i][j]);
-                        sumG += (Color.green(pixelsMatrix[i][j]) * matrix.Matrix[i][j]);
-                        sumB += (Color.blue (pixelsMatrix[i][j]) * matrix.Matrix[i][j]);
+                if (GrayScale) {
+
+                    // se koristie za edge detection
+
+                    // get sum of RGB on matrix
+                    for (int i = 0; i < SIZE; ++i) {
+                        for (int j = 0; j < SIZE; ++j) {
+                            sumR += (Color.red(pixelsMatrix[i][j]) * matrix.Matrix[i][j]);
+                        }
                     }
-                }
 
-                // get final Red
-                R = (int) (sumR / matrix.Factor + matrix.Offset);
-                if (R < 0) {
-                    R = 0;
-                } else if (R > 255) {
-                    R = 255;
-                }
+                    // get final Red
+                    R = (int) (sumR / matrix.Factor);
 
-                // get final Green
-                G = (int) (sumG / matrix.Factor + matrix.Offset);
-                if (G < 0) {
-                    G = 0;
-                } else if (G > 255) {
-                    G = 255;
-                }
+                    if (R < 0) {
+                        R = 0;
+                    } else if (R > 255) {
+                        R = 255;
+                    }
 
-                // get final Blue
-                B = (int) (sumB / matrix.Factor + matrix.Offset);
-                if (B < 0) {
-                    B = 0;
-                } else if (B > 255) {
-                    B = 255;
+                    R = R;
+                    G = R;
+                    B = R;
+
+                } else {
+                    // get sum of RGB on matrix
+                    for (int i = 0; i < SIZE; ++i) {
+                        for (int j = 0; j < SIZE; ++j) {
+                            sumR += (Color.red(pixelsMatrix[i][j]) * matrix.Matrix[i][j]);
+                            sumG += (Color.green(pixelsMatrix[i][j]) * matrix.Matrix[i][j]);
+                            sumB += (Color.blue(pixelsMatrix[i][j]) * matrix.Matrix[i][j]);
+                        }
+                    }
+
+                    // get final Red
+                    R = (int) (sumR / matrix.Factor);
+                    if (R < 0) {
+                        R = 0;
+                    } else if (R > 255) {
+                        R = 255;
+                    }
+
+                    // get final Green
+                    G = (int) (sumG / matrix.Factor);
+                    if (G < 0) {
+                        G = 0;
+                    } else if (G > 255) {
+                        G = 255;
+                    }
+
+                    // get final Blue
+                    B = (int) (sumB / matrix.Factor);
+                    if (B < 0) {
+                        B = 0;
+                    } else if (B > 255) {
+                        B = 255;
+                    }
+
                 }
 
                 // apply new pixel
-                pixels[(w) + (h)*width] = Color.argb(A, R, G, B);
-
+                pixels[(w) + (h) * width] = Color.argb(A, R, G, B);
             }
+
         }
 
         result.setPixels(pixels, 0, width, 1, 1, width - 1, height - 1);
+
+        // crop out 3 pixels - gi secem ovie zatoa sto pri konvolucija 3x3 nemame so sto da pravime
+        // konvolucija so poslednite pikseli
+        result = Bitmap.createBitmap(result, 0, 0, result.getWidth()-5, result.getHeight());
 
         // final image
         return result;

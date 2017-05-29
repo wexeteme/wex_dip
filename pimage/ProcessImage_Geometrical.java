@@ -198,21 +198,6 @@ public class ProcessImage_Geometrical {
 
     // scale the image
 
-    public static Bitmap scaleBitmap(Bitmap bitmap, final boolean saveToDisk, int wantedWidth, int wantedHeight) {
-
-        Bitmap output = Bitmap.createBitmap(wantedWidth, wantedHeight, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(output);
-
-        Matrix m = new Matrix();
-        m.setScale((float) wantedWidth / bitmap.getWidth(), (float) wantedHeight / bitmap.getHeight());
-
-        canvas.drawBitmap(bitmap, m, new Paint());
-
-        isBussy = false;
-
-        return output;
-    }
-
     public static Bitmap scaleBitmapMax(Bitmap image, final boolean saveToDisk, int maxWidth, int maxHeight) {
         if (maxHeight > 0 && maxWidth > 0) {
             int width = image.getWidth();
