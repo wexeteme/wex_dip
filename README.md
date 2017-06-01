@@ -1,5 +1,5 @@
 # wex_dip
-Image processing tools wrriten in Java for the Android Platfrom by Velimir Avramovski.
+Image processing tools written in Java for the Android Platfrom by Velimir Avramovski.
 
 This lib was written for purposes of the UKIM, FEIT - Skopje Macedonia Digital Image processing Course.
 
